@@ -386,13 +386,65 @@ public class Determinante {
         imprimirMatriz(matrizResultado);
     }
 
-    private static double determinanteMatriz4x4(double[][] matriz4x4) {
-        double a = matriz4x4[0][0] * ((matriz4x4[1][1] * matriz4x4[2][2] * matriz4x4[3][3]) + (matriz4x4[1][2] * matriz4x4[2][3] * matriz4x4[3][1]) + (matriz4x4[1][3] * matriz4x4[2][1] * matriz4x4[3][2]));
-        double b = matriz4x4[0][1] * ((matriz4x4[1][0] * matriz4x4[2][2] * matriz4x4[3][3]) + (matriz4x4[1][2] * matriz4x4[2][3] * matriz4x4[3][0]) + (matriz4x4[1][3] * matriz4x4[2][0] * matriz4x4[3][2]));
-        double c = matriz4x4[0][2] * ((matriz4x4[1][0] * matriz4x4[2][1] * matriz4x4[3][3]) + (matriz4x4[1][1] * matriz4x4[2][3] * matriz4x4[3][0]) + (matriz4x4[1][3] * matriz4x4[2][0] * matriz4x4[3][1]));
-        double d = matriz4x4[0][3] * ((matriz4x4[1][0] * matriz4x4[2][1] * matriz4x4[3][2]) + (matriz4x4[1][1] * matriz4x4[2][2] * matriz4x4[3][0]) + (matriz4x4[1][2] * matriz4x4[2][0] * matriz4x4[3][1]));
-        return a - b + c - d;
+    private static double determinanteMatriz4x4(double[][] matriz) {
+        double determinante = 0;
+
+        for (int j = 0; j < 4; j++) {
+            determinante += matriz[0][j] * cofator(matriz, 0, j);
+        }
+
+        return determinante;
     }
+    public static double cofator(double[][] matriz, int linha, int coluna) {
+        double[][] menor = new double[3][3];
+        int m = 0, n;
+
+        for (int i = 0; i < 4; i++) {
+            if (i != linha) {
+                n = 0;
+                for (int j = 0; j < 4; j++) {
+                    if (j != coluna) {
+                        menor[m][n] = matriz[i][j];
+                        n++;
+                    }
+                }
+                m++;
+            }
+        }
+
+        return ((linha + coluna) % 2 == 0 ? 1 : -1) * determinanteMatriz3x32(menor);
+    }
+
+    public static double determinanteMatriz3x32(double[][] matriz) {
+        double determinante = 0;
+
+        for (int j = 0; j < 3; j++) {
+            determinante += matriz[0][j] * cofator3x3(matriz, 0, j);
+        }
+
+        return determinante;
+    }
+
+    public static double cofator3x3(double[][] matriz, int linha, int coluna) {
+        double[][] menor = new double[2][2];
+        int m = 0, n;
+
+        for (int i = 0; i < 3; i++) {
+            if (i != linha) {
+                n = 0;
+                for (int j = 0; j < 3; j++) {
+                    if (j != coluna) {
+                        menor[m][n] = matriz[i][j];
+                        n++;
+                    }
+                }
+                m++;
+            }
+        }
+
+        return ((linha + coluna) % 2 == 0 ? 1 : -1) * (menor[0][0] * menor[1][1] - menor[0][1] * menor[1][0]);
+    }
+
 
     private static void adicaoMatriz4x4(double[][] matriz1, double[][] matriz2) {
         double[][] matrizResultado = new double[4][4];
